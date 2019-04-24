@@ -1,0 +1,131 @@
+/*HEADER:
+ *Course: CS106B
+ *Year: 2018
+ *Name: Chase Renick
+ *Assignment: To construct anagrams from a phrase passed by the user based on words found in a passed dictionary. The maximum number of Anagrams to be displayed
+ *            should be indicated by the user.  
+ */
+
+//LIBRARIES 
+#include <string>
+#include "letterinventory.h"
+#include "set.h"
+using namespace std;
+
+//FUNCTION PROTOTYPES 
+void pruneDictionary(LetterInventory li, Set<string>& dictionary, Set<string>& small_dictionary);
+void findAnagramsHelper(LetterInventory li, int max, Set<string>&dictionary, Vector<Vector<string>>& anagram_inventory);
+void printAnagrams(Vector<Vector<string>>anagram_inventory);
+int findAnagrams(string phrase, int max, Set<string>& dictionary);
+
+
+
+//MAIN FUNCTIONS
+
+/*Function: The main function that is not to be changed.
+ *Input: A string or phrase to be selected, the maximum number of anagrams to be passed, and a dictionary to see what anagrams can be formed 
+ *Output: An integer indicating the number of anagrams found in the phrase based on the dictionary 
+ */
+int findAnagrams(string phrase, int max, Set<string>& dictionary) {
+    LetterInventory li (phrase);
+    Vector<Vector<string>> anagram_inventory;
+
+    findAnagramsHelper(li,max, dictionary, anagram_inventory);
+    printAnagrams(anagram_inventory);
+    
+    return anagram_inventory.size();
+}
+
+/*Function:
+ *Input:
+ *Output:
+ */
+void printAnagrams(Vector<Vector<string>>anagram_inventory){
+    cout << anagram_inventory.toString() << endl;
+    cout << "\n";
+    for (int i=0; i<anagram_inventory.size(); ++i){
+        cout << anagram_inventory[i]<< endl;
+    }
+}
+
+/*Function: Prune's the dictionary a second time by checking whether a given letter inventory contains the word and passing only those words which are contained 
+ *          in the dictionary to a smaller dictionary.
+ *Input: The letter inventory, the macro dictionary, and an empty micro dictionary 
+ *Output: Nothing -> it is a void function, but the rsult is a smaller dictionary that will contain only words that can make up those in the letter inventory
+ */
+void pruneDictionary(LetterInventory li, Set<string>& dictionary, Set<string>& small_dictionary){
+    for (string word:dictionary){
+        if (li.contains(word)){
+            small_dictionary.add(word);
+        }
+    }
+}
+
+/*Function:
+ *Input:
+ *Output:
+ */
+void findAnagramsHelper(LetterInventory li, int max, Set<string>&dictionary, Vector<Vector<string>>& anagram_inventory){
+    //prune dictionary here
+    Set<string> small_dictionary;
+    pruneDictionary(li,dictionary,small_dictionary);
+
+    cout << "findAnagramHelper is called: " << endl;
+
+    Vector<Vector<string>> new_vector;
+    Vector<string> temp;
+
+    cout << "New_vector.size(): " << new_vector.size() << endl;
+
+    if (li.isEmpty()){
+        cout << "li is empty: " << endl;
+     return;
+    }
+    else if (max<0) {
+        throw "You passed a negative value for int. Please revise your response.";
+    }else if (max==0 || max > 1){
+        //choose
+        cout <<"Entered else if max==0 or max>1:" << endl;
+        for (string word: small_dictionary){
+            cout  << "Chosen dictionary word: " << word << endl;
+            if (li.contains(word)){
+                cout << "Dictionary contains the word: " << word << endl;
+                new_vector.clear();
+
+                li.subtract(word);
+
+                cout << "word is substracted" << endl;
+                cout << "Letter Inventory without the word: " << li.toString() << endl;
+                cout << "findAnagramhelper called again" << endl;
+                findAnagramsHelper(li, max, small_dictionary, new_vector);
+
+                cout << "finally rotating through new vector step by step:"  << endl;
+                for (int i=0; i<new_vector.size(); ++i)
+                {
+                    Vector<string> temp_word_vector;
+                    temp_word_vector.clear();
+                    temp_word_vector.add(word);
+                    cout << "added this word to temp vector: " << word << endl;
+                    anagram_inventory.add(temp_word_vector + new_vector[i]);
+                    cout << "added temp_word_vector + new_vector[i]: " << temp_word_vector.toString() + " "+ new_vector[i].toString() << endl;
+                }
+
+                if (li.isEmpty() && new_vector.size()==0)
+                {
+                    cout << "li is empty or new_vector.size == 0" << endl;
+                    temp.clear();
+                    temp.add(word);
+                    cout << "adding this word to the temp vector:" << word << endl;
+                    anagram_inventory.add(temp);
+                    cout << "adding the temp vector to anagram inventory: " << temp.toString() << endl;
+                }
+                //unchoose
+                cout << "adding back the word to li: " << word << endl;
+                li.add(word);
+             }
+        }
+    }
+}
+
+
+
