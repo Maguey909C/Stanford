@@ -1,0 +1,10 @@
+<s>::=<np> <vp>
+<np>::=<dp> <adjp> <n>|<pn>
+<dp>::=the|a
+<adjp>::=<adj>|<adj> <adjp>
+<adj>::=superfluous|existential|rude|exotic|flamboyant|shiny|sardonic|plethora
+<n>::=city|country|village|ecosystem|hope|friends|family|news|children|happiness|sadness
+<pn>::=Trump|Rumsfeld|Cheny|Bush|Clinton|Pelosi|Putin|Jesus|Rice|Cohen|Satan|Joe|Syria|Russia|America
+<vp>::=<tv> <np>|<iv>
+<tv>::=burned|initiated|destroyed|built|ate|ruined|resurrected|respected|retaliated
+<iv>::=died|flopped|drowned|translated|abounded|joined
